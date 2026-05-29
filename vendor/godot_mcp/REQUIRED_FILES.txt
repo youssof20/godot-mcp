@@ -1,0 +1,15 @@
+Godot MCP Pro — verify these files exist after copying addons/godot_mcp into your game project.
+
+Critical runtime autoloads (startup errors if missing):
+  mcp_screenshot_service.gd
+  mcp_input_service.gd
+  mcp_game_inspector_service.gd
+
+Plugin core:
+  plugin.cfg
+  plugin.gd
+  command_router.gd
+  websocket_server.gd
+  mcp_activity_log.gd
+
+If any autoload file is missing, re-copy the entire folder from this repo's vendor/godot_mcp/ — do not copy only plugin.cfg or commands/.

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "godot-local": {
+      "command": "node",
+      "args": ["e:/Godot/MCP Tool/build/index.js", "--lite"]
+    }
+  }
+}
