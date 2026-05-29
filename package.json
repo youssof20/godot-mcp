@@ -1,7 +1,7 @@
 {
   "name": "godot-mcp-local",
   "version": "2.0.0",
-  "description": "MCP server for Godot editor via WebSocket JSON-RPC",
+  "description": "MCP server for Godot 4 editor integration over WebSocket JSON-RPC",
   "type": "module",
   "main": "build/index.js",
   "scripts": {

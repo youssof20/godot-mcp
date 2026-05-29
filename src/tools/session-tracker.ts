@@ -114,7 +114,7 @@ export function checkChatHealth(): ChatHealthReport {
   const failureCount = records.filter((r) => !r.ok).length;
   if (records.length > 25 && failureCount / records.length > 0.5) {
     warnings.push(
-      `Over half of MCP calls in this session failed (${failureCount}/${records.length}). Consider restarting the Cursor chat and calling initialize_session again.`,
+      `Over half of MCP calls in this session failed (${failureCount}/${records.length}). Restart the MCP session and call initialize_session again.`,
     );
   }
 
@@ -141,7 +141,7 @@ function buildReport(
     warnings,
     plain_english:
       warnings.join(" ") +
-      " Start a fresh Cursor chat, call list_available_tools → get_capabilities → initialize_session, then retry once. Do not tell the model to 'stop repeating' — that often makes loops worse.",
+      " Restart the client session, then call list_available_tools, get_capabilities, and initialize_session before retrying.",
     repeated_tool_pattern: repeatedTool,
     repeated_error_pattern: repeatedError,
     recent_failure_count: recentFailures,

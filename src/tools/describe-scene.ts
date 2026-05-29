@@ -575,7 +575,7 @@ async function actionAssetInventory(
     sentences.push(`${g.total} ${key} (${extDetail}).`);
   }
   sentences.push(
-    `Cursor cannot generate audio, textures, meshes, or fonts — if any of these counts are 0 or low and your game needs them, ask the user.`,
+    `This server cannot generate audio, textures, meshes, or fonts. If counts are zero and the game needs them, add assets to the project.`,
   );
 
   return {
@@ -833,7 +833,7 @@ export function registerDescribeSceneTool(client: GodotClient): void {
     description:
       'Scene translation layer. One tool, eight actions: ' +
       'spatial_3d, spatial_2d, ui_outline, tilemap_grid, animation_state, asset_inventory, scene_diff, visible_nodes, physics_events. ' +
-      'Returns structured data plus plain_english Cursor can read directly. Prefer this over many low-level get_node_properties calls.',
+      'Returns structured data plus a text summary. Prefer this over long chains of get_node_properties.',
     schema: z.object({
       action: z
         .enum(ACTIONS)

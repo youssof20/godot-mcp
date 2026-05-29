@@ -12,7 +12,7 @@ export function registerGuardrailTools(client: GodotClient): void {
   registerTool(client, {
     name: "flag_chat_health",
     description:
-      "Detects repetition loops and repeated errors in this MCP server session. Call when the agent seems stuck, ignores feedback, or keeps calling the same tool. Returns plain_english guidance (usually: start a fresh Cursor chat).",
+      "Detects repetition loops and repeated errors in this MCP server session. Call when tools keep failing or repeating with the same parameters.",
     schema: z.object({}),
     handler: async () => checkChatHealth(),
   });
@@ -64,7 +64,7 @@ export function registerGuardrailTools(client: GodotClient): void {
   registerTool(client, {
     name: "get_project_memory",
     description:
-      "Read persistent project facts saved across Cursor chat resets (stored in user://mcp_project_memory.json in Godot).",
+      "Read persistent project notes (stored in user://mcp_project_memory.json in Godot).",
     schema: z.object({}),
     handler: async (c) => callGodot(c, "get_project_memory", {}),
   });
