@@ -85,7 +85,10 @@ func set_particle_color_gradient(params: Dictionary) -> Dictionary:
 	for i in range(colors.size()):
 		var c := MCPTypeParser.parse_value(colors[i])
 		gradient.add_point(float(i) / maxf(float(colors.size() - 1), 1.0), c if c is Color else Color.WHITE)
-	ppm.color_ramp = gradient
+	# Godot 4.7+ API: ParticleProcessMaterial.color_ramp is GradientTexture1D (Texture2D).
+	var grad_tex := GradientTexture1D.new()
+	grad_tex.gradient = gradient
+	ppm.color_ramp = grad_tex
 
 	return {"node_path": _ctx.node_path_relative(node), "color_points": colors.size()}
 
@@ -135,7 +138,7 @@ func get_particle_info(params: Dictionary) -> Dictionary:
 	if node == null:
 		return MCPErrorCodes.make_error(MCPErrorCodes.NOT_FOUND, "Particle node not found.")
 
-	var mat := node.process_material
+	var mat: Material = node.process_material as Material
 	return {
 		"node_path": _ctx.node_path_relative(node),
 		"type": node.get_class(),
