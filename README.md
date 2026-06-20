@@ -31,7 +31,7 @@ npm run build
 Confirm this file exists (use your real path):
 
 ```powershell
-Test-Path E:\Code\godot-mcp\dist\index.js   # should be True
+Test-Path C:\dev\godot-mcp\dist\index.js   # should be True (use your clone path)
 ```
 
 ### 2. Add the plugin to your Godot project
@@ -57,7 +57,7 @@ Replace the path below with the **absolute path** to `dist/index.js` from step 1
   "mcpServers": {
     "godot-mcp": {
       "command": "node",
-      "args": ["E:/Code/godot-mcp/dist/index.js"],
+      "args": ["C:/dev/godot-mcp/dist/index.js"],
       "env": {
         "GODOT_MCP_PORT": "6505",
         "GODOT_MCP_MODE": "full"

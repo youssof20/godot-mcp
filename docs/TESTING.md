@@ -8,7 +8,7 @@ Manual test checklist per phase. **Do not advance phases until you confirm the c
 
 1. **Node.js 18+** installed
 2. **Godot 4.4+** installed
-3. This repository cloned to `e:\Code\godot-mcp-personal` (or your path)
+3. This repository cloned somewhere on disk (e.g. `C:\dev\godot-mcp`)
 
 ---
 
@@ -17,7 +17,7 @@ Manual test checklist per phase. **Do not advance phases until you confirm the c
 ### 1. Build TypeScript server
 
 ```powershell
-cd e:\Code\godot-mcp-personal
+cd C:\dev\godot-mcp
 npm install
 npm run build
 ```
@@ -34,13 +34,13 @@ You need **any** Godot 4.4+ project. Options:
 2. **New Project** → name it `mcp-test` → create
 3. Copy the addon into the project:
    ```powershell
-   xcopy /E /I "e:\Code\godot-mcp-personal\addons\godot_mcp_personal" "C:\path\to\mcp-test\addons\godot_mcp_personal"
+   xcopy /E /I "C:\dev\godot-mcp\addons\godot_mcp_personal" "C:\dev\my-game\addons\godot_mcp_personal"
    ```
    Or symlink the addon if you prefer developing in-place.
 
 **Option B — Use this repo as project root**
 
-1. In Godot: **Import** → select `e:\Code\godot-mcp-personal`
+1. In Godot: **Import** → select `C:\dev\godot-mcp`
 2. Godot will create/import `project.godot` if missing (you may need to create one manually)
 
 ### 3. Enable the plugin
@@ -71,9 +71,9 @@ Copy `.mcp.example.json` content into your Cursor MCP settings (or merge):
 ```json
 {
   "mcpServers": {
-    "godot-mcp-personal": {
+    "godot-mcp": {
       "command": "node",
-      "args": ["e:/Code/godot-mcp-personal/dist/index.js"],
+      "args": ["C:/dev/godot-mcp/dist/index.js"],
       "env": {
         "GODOT_MCP_PORT": "6505"
       }

@@ -1,6 +1,6 @@
 # Godot API Notes (Phase 0)
 
-Research notes for **Godot 4.4+** APIs used by godot-mcp-personal.  
+Research notes for **Godot 4.4+** APIs used by godot-mcp.  
 Official docs base: https://docs.godotengine.org/en/stable/
 
 > **Rule:** Before implementing a tool, verify the method exists in 4.4+ docs. Isolate version-sensitive calls behind helpers and add an inline comment naming the API assumption.

@@ -2,7 +2,7 @@
   "mcpServers": {
     "godot-mcp": {
       "command": "node",
-      "args": ["e:/Code/godot-mcp/dist/index.js"],
+      "args": ["C:/dev/godot-mcp/dist/index.js"],
       "env": {
         "GODOT_MCP_PORT": "6505",
         "GODOT_MCP_MODE": "full"
