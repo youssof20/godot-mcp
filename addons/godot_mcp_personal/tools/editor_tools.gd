@@ -43,7 +43,7 @@ func get_output_log(params: Dictionary) -> Dictionary:
 		return MCPErrorCodes.make_error(
 			MCPErrorCodes.INTERNAL_ERROR,
 			"Log capture is not initialized.",
-			"Disable and re-enable the Godot MCP Personal plugin."
+            "Disable and re-enable the Godot MCP plugin."
 		)
 
 	var limit := int(params.get("limit", 100))

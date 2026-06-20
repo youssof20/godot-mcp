@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "godot-mcp-personal": {
+    "godot-mcp": {
       "command": "node",
       "args": ["e:/Code/godot-mcp-personal/dist/index.js"],
       "env": {

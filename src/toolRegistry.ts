@@ -27,14 +27,18 @@ import { registerAnalysisTools } from "./tools/analysis.js";
 import {
   IMPLEMENTED_TOOLS,
   MINIMAL_MODE_TOOLS,
+  LITE_MODE_EXCLUDED,
 } from "./tools/constants.js";
 import { getToolMode, type ToolMode } from "./schemas.js";
 
 function getEnabledToolNames(mode: ToolMode): string[] {
   switch (mode) {
     case "full":
-    case "lite":
       return [...IMPLEMENTED_TOOLS];
+    case "lite":
+      return [...IMPLEMENTED_TOOLS].filter(
+        (name) => !(LITE_MODE_EXCLUDED as readonly string[]).includes(name),
+      );
     case "minimal":
     default:
       return [...IMPLEMENTED_TOOLS].filter((name) =>

@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { GodotClient } from "../godotClient.js";
 import { formatToolError } from "../errors.js";
@@ -86,6 +87,23 @@ export function registerServerTools(
             content: [{ type: "text", text: formatted.text }],
             isError: true,
           };
+        }
+      },
+    );
+  }
+
+  if (enabled.has("get_tool_help")) {
+    server.tool(
+      "get_tool_help",
+      "Get help metadata for a tool (category, description). Omit tool to list all.",
+      { tool: z.string().optional() },
+      async (params) => {
+        try {
+          const result = await client.callTool("get_tool_help", params);
+          return jsonResult(result);
+        } catch (error) {
+          const formatted = formatToolError(error);
+          return { content: [{ type: "text", text: formatted.text }], isError: true };
         }
       },
     );

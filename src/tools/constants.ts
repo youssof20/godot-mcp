@@ -152,6 +152,7 @@ export const IMPLEMENTED_TOOLS = [
   "find_unused_resources",
   "get_project_statistics",
   "audit_project_health",
+  "get_tool_help",
 ] as const;
 
 export type ImplementedTool = (typeof IMPLEMENTED_TOOLS)[number];
@@ -330,23 +331,23 @@ export const PLANNED_TOOLS = [
 ] as const;
 
 export const MINIMAL_MODE_TOOLS = [
-  ...IMPLEMENTED_TOOLS,
+  "godot_ping",
+  "get_connection_status",
+  "list_available_tools",
+  "get_tool_help",
   "get_project_info",
   "get_scene_tree",
   "get_filesystem_tree",
   "read_script",
-  "create_script",
-  "edit_script",
-  "attach_script",
   "get_editor_errors",
-  "create_scene",
+  "get_node_properties",
   "open_scene",
   "save_scene",
-  "add_node",
-  "delete_node",
-  "rename_node",
-  "update_property",
-  "get_node_properties",
-  "play_scene",
-  "stop_scene",
+] as const;
+
+/** Excluded from GODOT_MCP_MODE=lite (long-running or dangerous) */
+export const LITE_MODE_EXCLUDED = [
+  "export_project",
+  "execute_game_script",
+  "run_stress_test",
 ] as const;

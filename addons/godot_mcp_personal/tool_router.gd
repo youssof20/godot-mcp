@@ -158,6 +158,7 @@ const IMPLEMENTED_TOOLS: Array[String] = [
 	"find_unused_resources",
 	"get_project_statistics",
 	"audit_project_health",
+	"get_tool_help",
 ]
 
 var _plugin: EditorPlugin
@@ -188,6 +189,7 @@ var _shader_tools: MCPShaderTools
 var _profiling_tools: MCPProfilingTools
 var _export_tools: MCPExportTools
 var _analysis_tools: MCPAnalysisTools
+var _tool_help: MCPToolHelpTools
 var _frame_recorder: MCPFrameRecorder
 var _ctx: MCPEditorContext
 
@@ -259,6 +261,7 @@ func setup(
 	_export_tools.setup(plugin, _ctx)
 	_analysis_tools = MCPAnalysisTools.new()
 	_analysis_tools.setup(plugin, _ctx)
+	_tool_help = MCPToolHelpTools.new()
 
 
 func route(method: String, params: Dictionary) -> Dictionary:
@@ -567,6 +570,8 @@ func route(method: String, params: Dictionary) -> Dictionary:
 			return _dispatch(_analysis_tools.get_project_statistics(params))
 		"audit_project_health":
 			return _dispatch(_analysis_tools.audit_project_health(params))
+		"get_tool_help":
+			return _dispatch(_tool_help.get_tool_help(params, IMPLEMENTED_TOOLS))
 		_:
 			return MCPErrorCodes.not_implemented(method)
 

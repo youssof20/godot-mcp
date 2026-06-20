@@ -1,11 +1,11 @@
 {
-  "name": "godot-mcp-personal",
-  "version": "0.1.0",
-  "description": "Personal Godot 4 MCP server — TypeScript stdio bridge to a Godot editor plugin",
+  "name": "godot-mcp",
+  "version": "0.2.0",
+  "description": "Godot 4 MCP server — TypeScript stdio bridge to a Godot editor plugin",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "godot-mcp-personal": "dist/index.js"
+    "godot-mcp": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -20,7 +20,9 @@
     "test:phase7": "node scripts/smoke-phase7.mjs",
     "test:phase8": "node scripts/smoke-phase8.mjs",
     "test:phase9": "node scripts/smoke-phase9.mjs",
-    "test:tools": "node scripts/smoke-ws.mjs list_available_tools"
+    "test:phase10": "node scripts/smoke-phase10.mjs",
+    "test:tools": "node scripts/smoke-ws.mjs list_available_tools",
+    "test:ci": "npm run build && npm run typecheck"
   },
   "engines": {
     "node": ">=18"

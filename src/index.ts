@@ -6,8 +6,8 @@ import { GodotClient } from "./godotClient.js";
 import { registerAllTools } from "./toolRegistry.js";
 import { getGodotPort } from "./schemas.js";
 
-const SERVER_NAME = "godot-mcp-personal";
-const SERVER_VERSION = "0.1.0";
+const SERVER_NAME = "godot-mcp";
+const SERVER_VERSION = "0.2.0";
 
 async function main(): Promise<void> {
   const port = getGodotPort();

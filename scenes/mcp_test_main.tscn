@@ -30,6 +30,14 @@ radius = 20.0
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iyshp"]
 albedo_color = Color(0.2, 0.6, 1, 1)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_jw4lu"]
+radius = 20.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_iyshp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b2rc3"]
+albedo_color = Color(0.2, 0.6, 1, 1)
+
 [node name="Main" type="Node2D" unique_id=2016161995]
 
 [node name="Hero" type="Sprite2D" parent="." unique_id=1704099948]
@@ -57,3 +65,19 @@ shape = SubResource("CircleShape2D_hosix")
 [node name="MCPMesh" type="MeshInstance3D" parent="." unique_id=1749448378]
 mesh = SubResource("BoxMesh_jw4lu")
 surface_material_override/0 = SubResource("StandardMaterial3D_iyshp")
+
+[node name="@RigidBody2D@19818" type="RigidBody2D" parent="." unique_id=741568562]
+
+[node name="CollisionShape" type="CollisionShape2D" parent="@RigidBody2D@19818" unique_id=1886983136]
+shape = SubResource("CircleShape2D_jw4lu")
+
+[node name="@MeshInstance3D@19819" type="MeshInstance3D" parent="." unique_id=672420248]
+mesh = SubResource("BoxMesh_iyshp")
+surface_material_override/0 = SubResource("StandardMaterial3D_b2rc3")
+
+[node name="MCPParticles" type="GPUParticles2D" parent="." unique_id=1783060539]
+amount = 16
+
+[node name="MCPNav" type="NavigationRegion3D" parent="." unique_id=1352678649]
+
+[node name="MCPAudio" type="AudioStreamPlayer2D" parent="." unique_id=848147855]

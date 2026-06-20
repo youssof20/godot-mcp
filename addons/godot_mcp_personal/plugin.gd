@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 
-## Godot MCP Personal - editor plugin entry point.
+## Godot MCP - editor plugin entry point.
 ## Godot 4.4+ assumption: EditorPlugin lifecycle via _enter_tree/_exit_tree.
 
 const WebSocketServerScript = preload("res://addons/godot_mcp_personal/websocket_server.gd")

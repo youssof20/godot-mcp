@@ -106,7 +106,7 @@ export class GodotClient {
         "Godot editor plugin is not connected.",
         {
           suggestion:
-            "Open Godot 4.4+, enable Project → Project Settings → Plugins → Godot MCP Personal, and confirm the editor Output shows the WebSocket server started.",
+            "Open Godot 4.4+, enable Project → Project Settings → Plugins → Godot MCP, and confirm the editor Output shows the WebSocket server started.",
           details: this.getConnectionStatus() as unknown as Record<string, unknown>,
         },
       );
