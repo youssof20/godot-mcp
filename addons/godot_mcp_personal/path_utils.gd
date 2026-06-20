@@ -10,11 +10,28 @@ static func normalize_res_path(path: String) -> String:
 	var p := path.strip_edges().replace("\\", "/")
 	if p.begins_with("uid://"):
 		return p
+	if p.begins_with("user://"):
+		return p
 	if p.begins_with("res://"):
 		return p
 	if p.begins_with("res:/"):
 		return "res://" + p.trim_prefix("res:/")
 	return "res://" + p.trim_prefix("./")
+
+
+## Accept res://, user://, uid://, or bare project-relative paths.
+static func normalize_storage_path(path: String) -> String:
+	var p := path.strip_edges().replace("\\", "/")
+	if p.begins_with("user://") or p.begins_with("res://") or p.begins_with("uid://"):
+		return p
+	return normalize_res_path(p)
+
+
+static func globalize_storage_path(path: String) -> String:
+	var normalized := normalize_storage_path(path)
+	if normalized.begins_with("uid://"):
+		normalized = resolve_readable_path(normalized)
+	return ProjectSettings.globalize_path(normalized)
 
 
 static func is_inside_project(path: String) -> bool:

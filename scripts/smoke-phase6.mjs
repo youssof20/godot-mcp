@@ -35,8 +35,11 @@ if (pathA) {
     image_b: pathA,
     max_diff_ratio: 0,
   });
-  console.log("Compare self:", cmp.result?.passed);
-  if (!cmp.ok || !cmp.result?.passed) process.exit(1);
+  console.log("Compare self:", cmp.result?.passed, cmp.error?.code ?? "");
+  if (!cmp.ok || !cmp.result?.passed) {
+    console.error("compare_screenshots failed:", JSON.stringify(cmp));
+    process.exit(1);
+  }
 }
 
 await call("start_recording", { target: "editor_2d", interval_ms: 100 });

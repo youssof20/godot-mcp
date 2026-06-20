@@ -85,8 +85,8 @@ func capture_frames(params: Dictionary) -> Dictionary:
 
 
 func compare_screenshots(params: Dictionary) -> Dictionary:
-	var path_a := MCPPathUtils.normalize_res_path(str(params.get("image_a", "")))
-	var path_b := MCPPathUtils.normalize_res_path(str(params.get("image_b", "")))
+	var path_a := MCPPathUtils.normalize_storage_path(str(params.get("image_a", "")))
+	var path_b := MCPPathUtils.normalize_storage_path(str(params.get("image_b", "")))
 	var max_ratio := float(params.get("max_diff_ratio", 0.0))
 
 	if path_a.is_empty() or path_b.is_empty():

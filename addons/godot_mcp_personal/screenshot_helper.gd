@@ -15,8 +15,11 @@ static func ensure_capture_dir() -> String:
 static func capture_subviewport(viewport: SubViewport) -> Image:
 	if viewport == null:
 		return null
-	# Force a draw pass before reading texture (sync MCP call).
-	RenderingServer.force_draw()
+	# Godot 4.4+ API: SubViewport.render_target_update_mode, RenderingServer.force_draw()
+	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+	for _i in range(3):
+		RenderingServer.force_draw()
+		OS.delay_msec(16)
 	var tex := viewport.get_texture()
 	if tex == null:
 		return null
@@ -62,17 +65,15 @@ static func save_image_png(img: Image, filename: String) -> String:
 
 
 static func load_image_from_path(path: String) -> Image:
-	var resolved := path.strip_edges()
-	if resolved.begins_with("res://") or resolved.begins_with("user://"):
-		resolved = ProjectSettings.globalize_path(MCPPathUtils.normalize_res_path(resolved))
-	else:
-		resolved = MCPPathUtils.resolve_readable_path(path)
-	if not FileAccess.file_exists(resolved):
-		return null
+	var normalized := MCPPathUtils.normalize_storage_path(path.strip_edges())
 	var img := Image.new()
-	if img.load(resolved) != OK:
-		return null
-	return img
+	# Godot 4.4+ API: Image.load accepts res:// and user:// directly.
+	if img.load(normalized) == OK:
+		return img
+	var global_path := MCPPathUtils.globalize_storage_path(normalized)
+	if global_path != normalized and img.load(global_path) == OK:
+		return img
+	return null
 
 
 static func compare_images(a: Image, b: Image) -> Dictionary:
