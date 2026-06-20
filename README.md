@@ -15,9 +15,9 @@ Godot 4 editor plugin (addons/godot_mcp_personal)
 
 See [docs/PROTOCOL.md](docs/PROTOCOL.md) and [docs/GODOT_API_NOTES.md](docs/GODOT_API_NOTES.md).
 
-## Current status — Phase 8
+## Current status — Phase 9
 
-**Working tools (130):** Phases 1–8 including physics, 3D scene setup, particles, navigation, and audio.
+**Working tools (152):** Phases 1–9 including theme/UI, shaders, profiling, export, and project analysis.
 
 See [docs/TOOL_MATRIX.md](docs/TOOL_MATRIX.md) for the full list.
 
@@ -66,7 +66,7 @@ Verify tool count:
 npm run test:tools
 ```
 
-Should show `"count": 130` (or check with `npm run test:tools`).
+Should show `"count": 152` (or check with `npm run test:tools`).
 
 Restart Cursor / reload MCP servers after changes.
 

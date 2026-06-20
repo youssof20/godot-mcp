@@ -19,6 +19,7 @@
     "test:phase6": "node scripts/smoke-phase6.mjs",
     "test:phase7": "node scripts/smoke-phase7.mjs",
     "test:phase8": "node scripts/smoke-phase8.mjs",
+    "test:phase9": "node scripts/smoke-phase9.mjs",
     "test:tools": "node scripts/smoke-ws.mjs list_available_tools"
   },
   "engines": {

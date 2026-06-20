@@ -19,6 +19,11 @@ import { registerScene3dTools } from "./tools/scene3d.js";
 import { registerParticlesTools } from "./tools/particles.js";
 import { registerNavigationTools } from "./tools/navigation.js";
 import { registerAudioTools } from "./tools/audio.js";
+import { registerThemeUiTools } from "./tools/themeUi.js";
+import { registerShaderTools } from "./tools/shader.js";
+import { registerProfilingTools } from "./tools/profiling.js";
+import { registerExportTools } from "./tools/export.js";
+import { registerAnalysisTools } from "./tools/analysis.js";
 import {
   IMPLEMENTED_TOOLS,
   MINIMAL_MODE_TOOLS,
@@ -65,6 +70,11 @@ export function registerAllTools(server: McpServer, client: GodotClient): void {
   registerParticlesTools(server, client, enabled);
   registerNavigationTools(server, client, enabled);
   registerAudioTools(server, client, enabled);
+  registerThemeUiTools(server, client, enabled);
+  registerShaderTools(server, client, enabled);
+  registerProfilingTools(server, client, enabled);
+  registerExportTools(server, client, enabled);
+  registerAnalysisTools(server, client, enabled);
 }
 
 export { IMPLEMENTED_TOOLS, PLANNED_TOOLS } from "./tools/constants.js";

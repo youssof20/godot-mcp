@@ -1,8 +1,59 @@
 [gd_scene format=3 uid="uid://dbrh28s2ay8dw"]
 
+[sub_resource type="Animation" id="Animation_hosix"]
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MCPSprite:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jw4lu"]
+_data = {
+&"mcp_test_anim": SubResource("Animation_hosix")
+}
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_iyshp"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hosix"]
+radius = 20.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_jw4lu"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iyshp"]
+albedo_color = Color(0.2, 0.6, 1, 1)
+
 [node name="Main" type="Node2D" unique_id=2016161995]
 
 [node name="Hero" type="Sprite2D" parent="." unique_id=1704099948]
 position = Vector2(128, 64)
 
 [node name="@Sprite2D@19827" type="Sprite2D" parent="." unique_id=849383137]
+
+[node name="MCPSprite" type="Sprite2D" parent="." unique_id=277970821]
+
+[node name="MCPAnimPlayer" type="AnimationPlayer" parent="." unique_id=1325874476]
+libraries/ = SubResource("AnimationLibrary_jw4lu")
+
+[node name="MCPAnimTree" type="AnimationTree" parent="." unique_id=593658244]
+active = false
+tree_root = SubResource("AnimationNodeStateMachine_iyshp")
+anim_player = NodePath("MCPAnimPlayer")
+
+[node name="MCPTileLayer" type="TileMapLayer" parent="." unique_id=1621399034]
+
+[node name="MCPBody" type="RigidBody2D" parent="." unique_id=1309130004]
+
+[node name="CollisionShape" type="CollisionShape2D" parent="MCPBody" unique_id=162202538]
+shape = SubResource("CircleShape2D_hosix")
+
+[node name="MCPMesh" type="MeshInstance3D" parent="." unique_id=1749448378]
+mesh = SubResource("BoxMesh_jw4lu")
+surface_material_override/0 = SubResource("StandardMaterial3D_iyshp")

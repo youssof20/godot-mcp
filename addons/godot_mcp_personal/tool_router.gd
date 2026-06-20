@@ -136,6 +136,28 @@ const IMPLEMENTED_TOOLS: Array[String] = [
 	"set_audio_bus",
 	"get_audio_bus_layout",
 	"get_audio_info",
+	"create_theme",
+	"set_theme_color",
+	"set_theme_constant",
+	"set_theme_font_size",
+	"set_theme_stylebox",
+	"get_theme_info",
+	"get_performance_monitors",
+	"get_editor_performance",
+	"create_shader",
+	"read_shader",
+	"edit_shader",
+	"assign_shader_material",
+	"set_shader_param",
+	"get_shader_params",
+	"list_export_presets",
+	"export_project",
+	"get_export_info",
+	"analyze_scene_complexity",
+	"analyze_signal_flow",
+	"find_unused_resources",
+	"get_project_statistics",
+	"audit_project_health",
 ]
 
 var _plugin: EditorPlugin
@@ -161,6 +183,11 @@ var _scene3d_tools: MCPScene3DTools
 var _particle_tools: MCPParticleTools
 var _navigation_tools: MCPNavigationTools
 var _audio_tools: MCPAudioTools
+var _theme_ui_tools: MCPThemeUiTools
+var _shader_tools: MCPShaderTools
+var _profiling_tools: MCPProfilingTools
+var _export_tools: MCPExportTools
+var _analysis_tools: MCPAnalysisTools
 var _frame_recorder: MCPFrameRecorder
 var _ctx: MCPEditorContext
 
@@ -222,6 +249,16 @@ func setup(
 	_navigation_tools.setup(plugin, _ctx)
 	_audio_tools = MCPAudioTools.new()
 	_audio_tools.setup(plugin, _ctx)
+	_theme_ui_tools = MCPThemeUiTools.new()
+	_theme_ui_tools.setup(plugin, _ctx)
+	_shader_tools = MCPShaderTools.new()
+	_shader_tools.setup(plugin, _ctx)
+	_profiling_tools = MCPProfilingTools.new()
+	_profiling_tools.setup(plugin, _ctx)
+	_export_tools = MCPExportTools.new()
+	_export_tools.setup(plugin, _ctx)
+	_analysis_tools = MCPAnalysisTools.new()
+	_analysis_tools.setup(plugin, _ctx)
 
 
 func route(method: String, params: Dictionary) -> Dictionary:
@@ -486,6 +523,50 @@ func route(method: String, params: Dictionary) -> Dictionary:
 			return _dispatch(_audio_tools.get_audio_bus_layout(params))
 		"get_audio_info":
 			return _dispatch(_audio_tools.get_audio_info(params))
+		"create_theme":
+			return _dispatch(_theme_ui_tools.create_theme(params))
+		"set_theme_color":
+			return _dispatch(_theme_ui_tools.set_theme_color(params))
+		"set_theme_constant":
+			return _dispatch(_theme_ui_tools.set_theme_constant(params))
+		"set_theme_font_size":
+			return _dispatch(_theme_ui_tools.set_theme_font_size(params))
+		"set_theme_stylebox":
+			return _dispatch(_theme_ui_tools.set_theme_stylebox(params))
+		"get_theme_info":
+			return _dispatch(_theme_ui_tools.get_theme_info(params))
+		"get_performance_monitors":
+			return _dispatch(_profiling_tools.get_performance_monitors(params))
+		"get_editor_performance":
+			return _dispatch(_profiling_tools.get_editor_performance(params))
+		"create_shader":
+			return _dispatch(_shader_tools.create_shader(params))
+		"read_shader":
+			return _dispatch(_shader_tools.read_shader(params))
+		"edit_shader":
+			return _dispatch(_shader_tools.edit_shader(params))
+		"assign_shader_material":
+			return _dispatch(_shader_tools.assign_shader_material(params))
+		"set_shader_param":
+			return _dispatch(_shader_tools.set_shader_param(params))
+		"get_shader_params":
+			return _dispatch(_shader_tools.get_shader_params(params))
+		"list_export_presets":
+			return _dispatch(_export_tools.list_export_presets(params))
+		"export_project":
+			return _dispatch(_export_tools.export_project(params))
+		"get_export_info":
+			return _dispatch(_export_tools.get_export_info(params))
+		"analyze_scene_complexity":
+			return _dispatch(_analysis_tools.analyze_scene_complexity(params))
+		"analyze_signal_flow":
+			return _dispatch(_analysis_tools.analyze_signal_flow(params))
+		"find_unused_resources":
+			return _dispatch(_analysis_tools.find_unused_resources(params))
+		"get_project_statistics":
+			return _dispatch(_analysis_tools.get_project_statistics(params))
+		"audit_project_health":
+			return _dispatch(_analysis_tools.audit_project_health(params))
 		_:
 			return MCPErrorCodes.not_implemented(method)
 
