@@ -13,7 +13,7 @@ export function getToolMode(): ToolMode {
   if (raw === "full" || raw === "lite" || raw === "minimal") {
     return raw;
   }
-  return "minimal";
+  return "full";
 }
 
 export function isDangerousToolsAllowed(): boolean {

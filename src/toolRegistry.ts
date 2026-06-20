@@ -14,6 +14,11 @@ import { registerTestingQaTools } from "./tools/testingQa.js";
 import { registerAnimationTools } from "./tools/animation.js";
 import { registerAnimationTreeTools } from "./tools/animationTree.js";
 import { registerTilemapTools } from "./tools/tilemap.js";
+import { registerPhysicsTools } from "./tools/physics.js";
+import { registerScene3dTools } from "./tools/scene3d.js";
+import { registerParticlesTools } from "./tools/particles.js";
+import { registerNavigationTools } from "./tools/navigation.js";
+import { registerAudioTools } from "./tools/audio.js";
 import {
   IMPLEMENTED_TOOLS,
   MINIMAL_MODE_TOOLS,
@@ -55,6 +60,11 @@ export function registerAllTools(server: McpServer, client: GodotClient): void {
   registerAnimationTools(server, client, enabled);
   registerAnimationTreeTools(server, client, enabled);
   registerTilemapTools(server, client, enabled);
+  registerPhysicsTools(server, client, enabled);
+  registerScene3dTools(server, client, enabled);
+  registerParticlesTools(server, client, enabled);
+  registerNavigationTools(server, client, enabled);
+  registerAudioTools(server, client, enabled);
 }
 
 export { IMPLEMENTED_TOOLS, PLANNED_TOOLS } from "./tools/constants.js";

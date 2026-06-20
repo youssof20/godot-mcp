@@ -107,6 +107,35 @@ const IMPLEMENTED_TOOLS: Array[String] = [
 	"tilemap_clear",
 	"tilemap_get_info",
 	"tilemap_get_used_cells",
+	"setup_physics_body",
+	"setup_collision",
+	"set_physics_layers",
+	"get_physics_layers",
+	"get_collision_info",
+	"add_raycast",
+	"add_mesh_instance",
+	"setup_camera_3d",
+	"setup_lighting",
+	"setup_environment",
+	"add_gridmap",
+	"set_material_3d",
+	"create_particles",
+	"set_particle_material",
+	"set_particle_color_gradient",
+	"apply_particle_preset",
+	"get_particle_info",
+	"setup_navigation_region",
+	"setup_navigation_agent",
+	"bake_navigation_mesh",
+	"set_navigation_layers",
+	"get_navigation_info",
+	"get_navigation_path_preview",
+	"add_audio_player",
+	"add_audio_bus",
+	"add_audio_bus_effect",
+	"set_audio_bus",
+	"get_audio_bus_layout",
+	"get_audio_info",
 ]
 
 var _plugin: EditorPlugin
@@ -127,6 +156,11 @@ var _testing_qa_tools: MCPTestingQaTools
 var _animation_tools: MCPAnimationTools
 var _animation_tree_tools: MCPAnimationTreeTools
 var _tilemap_tools: MCPTilemapTools
+var _physics_tools: MCPPhysicsTools
+var _scene3d_tools: MCPScene3DTools
+var _particle_tools: MCPParticleTools
+var _navigation_tools: MCPNavigationTools
+var _audio_tools: MCPAudioTools
 var _frame_recorder: MCPFrameRecorder
 var _ctx: MCPEditorContext
 
@@ -178,6 +212,16 @@ func setup(
 	_animation_tree_tools.setup(plugin, _ctx)
 	_tilemap_tools = MCPTilemapTools.new()
 	_tilemap_tools.setup(plugin, _ctx)
+	_physics_tools = MCPPhysicsTools.new()
+	_physics_tools.setup(plugin, _ctx)
+	_scene3d_tools = MCPScene3DTools.new()
+	_scene3d_tools.setup(plugin, _ctx)
+	_particle_tools = MCPParticleTools.new()
+	_particle_tools.setup(plugin, _ctx)
+	_navigation_tools = MCPNavigationTools.new()
+	_navigation_tools.setup(plugin, _ctx)
+	_audio_tools = MCPAudioTools.new()
+	_audio_tools.setup(plugin, _ctx)
 
 
 func route(method: String, params: Dictionary) -> Dictionary:
@@ -384,6 +428,64 @@ func route(method: String, params: Dictionary) -> Dictionary:
 			return _dispatch(_tilemap_tools.tilemap_get_info(params))
 		"tilemap_get_used_cells":
 			return _dispatch(_tilemap_tools.tilemap_get_used_cells(params))
+		"setup_physics_body":
+			return _dispatch(_physics_tools.setup_physics_body(params))
+		"setup_collision":
+			return _dispatch(_physics_tools.setup_collision(params))
+		"set_physics_layers":
+			return _dispatch(_physics_tools.set_physics_layers(params))
+		"get_physics_layers":
+			return _dispatch(_physics_tools.get_physics_layers(params))
+		"get_collision_info":
+			return _dispatch(_physics_tools.get_collision_info(params))
+		"add_raycast":
+			return _dispatch(_physics_tools.add_raycast(params))
+		"add_mesh_instance":
+			return _dispatch(_scene3d_tools.add_mesh_instance(params))
+		"setup_camera_3d":
+			return _dispatch(_scene3d_tools.setup_camera_3d(params))
+		"setup_lighting":
+			return _dispatch(_scene3d_tools.setup_lighting(params))
+		"setup_environment":
+			return _dispatch(_scene3d_tools.setup_environment(params))
+		"add_gridmap":
+			return _dispatch(_scene3d_tools.add_gridmap(params))
+		"set_material_3d":
+			return _dispatch(_scene3d_tools.set_material_3d(params))
+		"create_particles":
+			return _dispatch(_particle_tools.create_particles(params))
+		"set_particle_material":
+			return _dispatch(_particle_tools.set_particle_material(params))
+		"set_particle_color_gradient":
+			return _dispatch(_particle_tools.set_particle_color_gradient(params))
+		"apply_particle_preset":
+			return _dispatch(_particle_tools.apply_particle_preset(params))
+		"get_particle_info":
+			return _dispatch(_particle_tools.get_particle_info(params))
+		"setup_navigation_region":
+			return _dispatch(_navigation_tools.setup_navigation_region(params))
+		"setup_navigation_agent":
+			return _dispatch(_navigation_tools.setup_navigation_agent(params))
+		"bake_navigation_mesh":
+			return _dispatch(_navigation_tools.bake_navigation_mesh(params))
+		"set_navigation_layers":
+			return _dispatch(_navigation_tools.set_navigation_layers(params))
+		"get_navigation_info":
+			return _dispatch(_navigation_tools.get_navigation_info(params))
+		"get_navigation_path_preview":
+			return _dispatch(_navigation_tools.get_navigation_path_preview(params))
+		"add_audio_player":
+			return _dispatch(_audio_tools.add_audio_player(params))
+		"add_audio_bus":
+			return _dispatch(_audio_tools.add_audio_bus(params))
+		"add_audio_bus_effect":
+			return _dispatch(_audio_tools.add_audio_bus_effect(params))
+		"set_audio_bus":
+			return _dispatch(_audio_tools.set_audio_bus(params))
+		"get_audio_bus_layout":
+			return _dispatch(_audio_tools.get_audio_bus_layout(params))
+		"get_audio_info":
+			return _dispatch(_audio_tools.get_audio_info(params))
 		_:
 			return MCPErrorCodes.not_implemented(method)
 

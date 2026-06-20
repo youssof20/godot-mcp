@@ -67,14 +67,17 @@ func get_animation_tree_structure(params: Dictionary) -> Dictionary:
 		var sm := root as AnimationNodeStateMachine
 		var states: Array[String] = []
 		var transitions: Array[Dictionary] = []
-		for i in range(sm.get_state_count()):
-			states.append(str(sm.get_state_name(i)))
+		# Godot 4.7+ API: get_node_list() replaces removed get_state_count()/get_state_name().
+		for state_name in sm.get_node_list():
+			states.append(str(state_name))
 		for i in range(sm.get_transition_count()):
+			var from_name := str(sm.get_transition_from(i))
+			var to_name := str(sm.get_transition_to(i))
 			transitions.append({
-				"from": str(sm.get_transition_from(i)),
-				"to": str(sm.get_transition_to(i)),
-				"x": sm.get_transition_x(i),
-				"y": sm.get_transition_y(i),
+				"from": from_name,
+				"to": to_name,
+				"from_position": _vec2_dict(sm.get_node_position(StringName(from_name))),
+				"to_position": _vec2_dict(sm.get_node_position(StringName(to_name))),
 			})
 		structure["states"] = states
 		structure["transitions"] = transitions
@@ -100,3 +103,7 @@ func _resolve_animation_tree(params: Dictionary) -> AnimationTree:
 	if node is AnimationTree:
 		return node as AnimationTree
 	return null
+
+
+func _vec2_dict(v: Vector2) -> Dictionary:
+	return {"x": v.x, "y": v.y}

@@ -15,9 +15,9 @@ Godot 4 editor plugin (addons/godot_mcp_personal)
 
 See [docs/PROTOCOL.md](docs/PROTOCOL.md) and [docs/GODOT_API_NOTES.md](docs/GODOT_API_NOTES.md).
 
-## Current status — Phase 5
+## Current status — Phase 8
 
-**Working tools (74):** Phases 1–5 including runtime play/stop, input simulation, and autoload introspection.
+**Working tools (130):** Phases 1–8 including physics, 3D scene setup, particles, navigation, and audio.
 
 See [docs/TOOL_MATRIX.md](docs/TOOL_MATRIX.md) for the full list.
 
@@ -51,18 +51,22 @@ Confirm Output shows:
 
 ### 3. Configure Cursor MCP
 
-This repo includes [`.cursor/mcp.json`](.cursor/mcp.json) — Cursor should auto-load **51 tools** (after Godot reload).
+This repo includes [`.cursor/mcp.json`](.cursor/mcp.json) with `GODOT_MCP_MODE=full`.
 
-If you still see only 3 tools:
-1. **Project → Reload Current Project** in Godot (plugin must match latest code)
-2. **Cursor Settings → MCP → Restart** the `godot-mcp-personal` server
-3. Confirm `GODOT_MCP_MODE` is `full` (not an old global config with `minimal`)
+If Cursor still shows **74 tools** (or any stale count):
+
+1. Rebuild: `npm run build`
+2. **Project → Reload Current Project** in Godot
+3. **Cursor Settings → MCP → Restart** the `godot-mcp-personal` server
+4. Confirm no duplicate godot MCP entry in user/global MCP settings without `GODOT_MCP_MODE=full`
 
 Verify tool count:
+
 ```powershell
 npm run test:tools
 ```
-Should show `"count": 51` after Godot reload.
+
+Should show `"count": 130` (or check with `npm run test:tools`).
 
 Restart Cursor / reload MCP servers after changes.
 
