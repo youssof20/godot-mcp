@@ -74,6 +74,19 @@ export const IMPLEMENTED_TOOLS = [
   "simulate_sequence",
   "get_input_actions",
   "set_input_action",
+  "get_editor_screenshot",
+  "get_game_screenshot",
+  "capture_frames",
+  "compare_screenshots",
+  "start_recording",
+  "stop_recording",
+  "replay_recording",
+  "run_test_scenario",
+  "assert_node_state",
+  "assert_screen_text",
+  "run_stress_test",
+  "get_test_report",
+  "monitor_properties",
 ] as const;
 
 export type ImplementedTool = (typeof IMPLEMENTED_TOOLS)[number];

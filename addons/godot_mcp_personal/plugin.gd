@@ -8,6 +8,7 @@ const WebSocketServerScript = preload("res://addons/godot_mcp_personal/websocket
 
 var _websocket_server: Node
 var _tool_router: MCPToolRouter
+var _frame_recorder: MCPFrameRecorder
 var _log_capture: MCPLogCapture
 var _server_start_time: float = 0.0
 
@@ -21,13 +22,17 @@ func _enter_tree() -> void:
 
 	_tool_router = MCPToolRouter.new()
 
+	_frame_recorder = MCPFrameRecorder.new()
+	_frame_recorder.name = "MCPFrameRecorder"
+
 	_websocket_server = WebSocketServerScript.new()
 	_websocket_server.name = "MCPWebSocketServer"
 
-	_tool_router.setup(self, _websocket_server, _server_start_time, _log_capture)
+	_tool_router.setup(self, _websocket_server, _server_start_time, _log_capture, _frame_recorder)
 	if _websocket_server.has_method("configure"):
 		_websocket_server.call("configure", _tool_router, _server_start_time)
 
+	add_child(_frame_recorder)
 	add_child(_websocket_server)
 
 	print("[godot-mcp] Plugin enabled")
@@ -43,5 +48,8 @@ func _exit_tree() -> void:
 			_websocket_server.call("shutdown")
 		_websocket_server.queue_free()
 		_websocket_server = null
+	if _frame_recorder:
+		_frame_recorder.queue_free()
+		_frame_recorder = null
 	_tool_router = null
 	print("[godot-mcp] Plugin disabled")

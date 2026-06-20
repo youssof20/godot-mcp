@@ -80,6 +80,19 @@ const IMPLEMENTED_TOOLS: Array[String] = [
 	"simulate_sequence",
 	"get_input_actions",
 	"set_input_action",
+	"get_editor_screenshot",
+	"get_game_screenshot",
+	"capture_frames",
+	"compare_screenshots",
+	"start_recording",
+	"stop_recording",
+	"replay_recording",
+	"run_test_scenario",
+	"assert_node_state",
+	"assert_screen_text",
+	"run_stress_test",
+	"get_test_report",
+	"monitor_properties",
 ]
 
 var _plugin: EditorPlugin
@@ -96,6 +109,8 @@ var _resource_tools: MCPResourceTools
 var _batch_tools: MCPBatchRefactorTools
 var _runtime_tools: MCPRuntimeTools
 var _input_tools: MCPInputTools
+var _testing_qa_tools: MCPTestingQaTools
+var _frame_recorder: MCPFrameRecorder
 var _ctx: MCPEditorContext
 
 
@@ -103,7 +118,8 @@ func setup(
 	plugin: EditorPlugin,
 	websocket_server: Node,
 	server_start_time: float,
-	log_capture: MCPLogCapture
+	log_capture: MCPLogCapture,
+	frame_recorder: MCPFrameRecorder
 ) -> void:
 	_plugin = plugin
 	_websocket_server = websocket_server
@@ -131,6 +147,13 @@ func setup(
 	_runtime_tools.setup(plugin, _ctx)
 	_input_tools = MCPInputTools.new()
 	_input_tools.setup(plugin, _ctx)
+
+	_frame_recorder = frame_recorder
+	var runtime_helper := MCPRuntimeHelper.new()
+	runtime_helper.setup(_ctx)
+	_testing_qa_tools = MCPTestingQaTools.new()
+	_testing_qa_tools.setup(plugin, _ctx, runtime_helper, self, _frame_recorder)
+	_frame_recorder.setup(Callable(_testing_qa_tools, "capture_for_recorder"))
 
 
 func route(method: String, params: Dictionary) -> Dictionary:
@@ -283,6 +306,32 @@ func route(method: String, params: Dictionary) -> Dictionary:
 			return _dispatch(_input_tools.get_input_actions(params))
 		"set_input_action":
 			return _dispatch(_input_tools.set_input_action(params))
+		"get_editor_screenshot":
+			return _dispatch(_testing_qa_tools.get_editor_screenshot(params))
+		"get_game_screenshot":
+			return _dispatch(_testing_qa_tools.get_game_screenshot(params))
+		"capture_frames":
+			return _dispatch(_testing_qa_tools.capture_frames(params))
+		"compare_screenshots":
+			return _dispatch(_testing_qa_tools.compare_screenshots(params))
+		"start_recording":
+			return _dispatch(_testing_qa_tools.start_recording(params))
+		"stop_recording":
+			return _dispatch(_testing_qa_tools.stop_recording(params))
+		"replay_recording":
+			return _dispatch(_testing_qa_tools.replay_recording(params))
+		"run_test_scenario":
+			return _dispatch(_testing_qa_tools.run_test_scenario(params))
+		"assert_node_state":
+			return _dispatch(_testing_qa_tools.assert_node_state(params))
+		"assert_screen_text":
+			return _dispatch(_testing_qa_tools.assert_screen_text(params))
+		"run_stress_test":
+			return _dispatch(_testing_qa_tools.run_stress_test(params))
+		"get_test_report":
+			return _dispatch(_testing_qa_tools.get_test_report(params))
+		"monitor_properties":
+			return _dispatch(_testing_qa_tools.monitor_properties(params))
 		_:
 			return MCPErrorCodes.not_implemented(method)
 

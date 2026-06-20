@@ -10,6 +10,7 @@ import { registerResourceTools } from "./tools/resource.js";
 import { registerBatchRefactorTools } from "./tools/batchRefactor.js";
 import { registerRuntimeTools } from "./tools/runtime.js";
 import { registerInputTools } from "./tools/input.js";
+import { registerTestingQaTools } from "./tools/testingQa.js";
 import {
   IMPLEMENTED_TOOLS,
   MINIMAL_MODE_TOOLS,
@@ -47,6 +48,7 @@ export function registerAllTools(server: McpServer, client: GodotClient): void {
   registerBatchRefactorTools(server, client, enabled);
   registerRuntimeTools(server, client, enabled);
   registerInputTools(server, client, enabled);
+  registerTestingQaTools(server, client, enabled);
 }
 
 export { IMPLEMENTED_TOOLS, PLANNED_TOOLS } from "./tools/constants.js";
