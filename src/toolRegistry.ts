@@ -11,6 +11,9 @@ import { registerBatchRefactorTools } from "./tools/batchRefactor.js";
 import { registerRuntimeTools } from "./tools/runtime.js";
 import { registerInputTools } from "./tools/input.js";
 import { registerTestingQaTools } from "./tools/testingQa.js";
+import { registerAnimationTools } from "./tools/animation.js";
+import { registerAnimationTreeTools } from "./tools/animationTree.js";
+import { registerTilemapTools } from "./tools/tilemap.js";
 import {
   IMPLEMENTED_TOOLS,
   MINIMAL_MODE_TOOLS,
@@ -49,6 +52,9 @@ export function registerAllTools(server: McpServer, client: GodotClient): void {
   registerRuntimeTools(server, client, enabled);
   registerInputTools(server, client, enabled);
   registerTestingQaTools(server, client, enabled);
+  registerAnimationTools(server, client, enabled);
+  registerAnimationTreeTools(server, client, enabled);
+  registerTilemapTools(server, client, enabled);
 }
 
 export { IMPLEMENTED_TOOLS, PLANNED_TOOLS } from "./tools/constants.js";

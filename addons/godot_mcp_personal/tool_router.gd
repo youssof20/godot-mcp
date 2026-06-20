@@ -93,6 +93,20 @@ const IMPLEMENTED_TOOLS: Array[String] = [
 	"run_stress_test",
 	"get_test_report",
 	"monitor_properties",
+	"list_animations",
+	"create_animation",
+	"add_animation_track",
+	"set_animation_keyframe",
+	"get_animation_info",
+	"remove_animation",
+	"create_animation_tree",
+	"get_animation_tree_structure",
+	"tilemap_set_cell",
+	"tilemap_fill_rect",
+	"tilemap_get_cell",
+	"tilemap_clear",
+	"tilemap_get_info",
+	"tilemap_get_used_cells",
 ]
 
 var _plugin: EditorPlugin
@@ -110,6 +124,9 @@ var _batch_tools: MCPBatchRefactorTools
 var _runtime_tools: MCPRuntimeTools
 var _input_tools: MCPInputTools
 var _testing_qa_tools: MCPTestingQaTools
+var _animation_tools: MCPAnimationTools
+var _animation_tree_tools: MCPAnimationTreeTools
+var _tilemap_tools: MCPTilemapTools
 var _frame_recorder: MCPFrameRecorder
 var _ctx: MCPEditorContext
 
@@ -154,6 +171,13 @@ func setup(
 	_testing_qa_tools = MCPTestingQaTools.new()
 	_testing_qa_tools.setup(plugin, _ctx, runtime_helper, self, _frame_recorder)
 	_frame_recorder.setup(Callable(_testing_qa_tools, "capture_for_recorder"))
+
+	_animation_tools = MCPAnimationTools.new()
+	_animation_tools.setup(plugin, _ctx)
+	_animation_tree_tools = MCPAnimationTreeTools.new()
+	_animation_tree_tools.setup(plugin, _ctx)
+	_tilemap_tools = MCPTilemapTools.new()
+	_tilemap_tools.setup(plugin, _ctx)
 
 
 func route(method: String, params: Dictionary) -> Dictionary:
@@ -332,6 +356,34 @@ func route(method: String, params: Dictionary) -> Dictionary:
 			return _dispatch(_testing_qa_tools.get_test_report(params))
 		"monitor_properties":
 			return _dispatch(_testing_qa_tools.monitor_properties(params))
+		"list_animations":
+			return _dispatch(_animation_tools.list_animations(params))
+		"create_animation":
+			return _dispatch(_animation_tools.create_animation(params))
+		"add_animation_track":
+			return _dispatch(_animation_tools.add_animation_track(params))
+		"set_animation_keyframe":
+			return _dispatch(_animation_tools.set_animation_keyframe(params))
+		"get_animation_info":
+			return _dispatch(_animation_tools.get_animation_info(params))
+		"remove_animation":
+			return _dispatch(_animation_tools.remove_animation(params))
+		"create_animation_tree":
+			return _dispatch(_animation_tree_tools.create_animation_tree(params))
+		"get_animation_tree_structure":
+			return _dispatch(_animation_tree_tools.get_animation_tree_structure(params))
+		"tilemap_set_cell":
+			return _dispatch(_tilemap_tools.tilemap_set_cell(params))
+		"tilemap_fill_rect":
+			return _dispatch(_tilemap_tools.tilemap_fill_rect(params))
+		"tilemap_get_cell":
+			return _dispatch(_tilemap_tools.tilemap_get_cell(params))
+		"tilemap_clear":
+			return _dispatch(_tilemap_tools.tilemap_clear(params))
+		"tilemap_get_info":
+			return _dispatch(_tilemap_tools.tilemap_get_info(params))
+		"tilemap_get_used_cells":
+			return _dispatch(_tilemap_tools.tilemap_get_used_cells(params))
 		_:
 			return MCPErrorCodes.not_implemented(method)
 

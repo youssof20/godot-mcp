@@ -87,6 +87,20 @@ export const IMPLEMENTED_TOOLS = [
   "run_stress_test",
   "get_test_report",
   "monitor_properties",
+  "list_animations",
+  "create_animation",
+  "add_animation_track",
+  "set_animation_keyframe",
+  "get_animation_info",
+  "remove_animation",
+  "create_animation_tree",
+  "get_animation_tree_structure",
+  "tilemap_set_cell",
+  "tilemap_fill_rect",
+  "tilemap_get_cell",
+  "tilemap_clear",
+  "tilemap_get_info",
+  "tilemap_get_used_cells",
 ] as const;
 
 export type ImplementedTool = (typeof IMPLEMENTED_TOOLS)[number];
