@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "godot-mcp-personal": {
+      "command": "node",
+      "args": ["e:/Code/godot-mcp-personal/dist/index.js"],
+      "env": {
+        "GODOT_MCP_PORT": "6505",
+        "GODOT_MCP_MODE": "full",
+        "GODOT_MCP_TIMEOUT_MS": "30000"
+      }
+    }
+  }
+}
