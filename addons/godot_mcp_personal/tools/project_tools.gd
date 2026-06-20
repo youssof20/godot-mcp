@@ -102,6 +102,34 @@ func get_project_settings(params: Dictionary) -> Dictionary:
 	)
 
 
+func set_project_setting(params: Dictionary) -> Dictionary:
+	var key := str(params.get("key", "")).strip_edges()
+	if key.is_empty() or not params.has("value"):
+		return MCPErrorCodes.make_error(MCPErrorCodes.INVALID_PARAMS, "'key' and 'value' are required.")
+
+	var new_value := MCPTypeParser.parse_value(params["value"])
+	var had_setting := ProjectSettings.has_setting(key)
+	var old_value = ProjectSettings.get_setting(key) if had_setting else null
+
+	var ur := _plugin.get_undo_redo()
+	ur.create_action("MCP Set Project Setting: %s" % key)
+	ur.add_do_method(ProjectSettings, "set_setting", key, new_value)
+	if had_setting:
+		ur.add_undo_method(ProjectSettings, "set_setting", key, old_value)
+	else:
+		ur.add_undo_method(ProjectSettings, "erase_setting", key)
+	ur.add_do_method(ProjectSettings, "save")
+	ur.add_undo_method(ProjectSettings, "save")
+	ur.commit_action()
+
+	return {
+		"key": key,
+		"old_value": str(old_value),
+		"new_value": str(ProjectSettings.get_setting(key)),
+		"saved": true,
+	}
+
+
 func uid_to_project_path(params: Dictionary) -> Dictionary:
 	var uid := str(params.get("uid", "")).strip_edges()
 	if uid.is_empty():

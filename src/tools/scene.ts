@@ -28,6 +28,11 @@ export const sceneToolSchemas = {
   delete_scene: z.object({
     scene_path: resPathSchema,
   }),
+  add_scene_instance: z.object({
+    scene_path: resPathSchema,
+    parent_path: z.string().optional().default("."),
+    node_name: z.string().optional(),
+  }),
 };
 
 export function registerSceneTools(
@@ -87,5 +92,14 @@ export function registerSceneTools(
     "delete_scene",
     "Delete a scene file from the project (undoable). Scene must not be open.",
     sceneToolSchemas.delete_scene.shape,
+  );
+
+  registerGodotTool(
+    server,
+    client,
+    enabled,
+    "add_scene_instance",
+    "Instance a packed scene under a parent node in the edited scene (undoable).",
+    sceneToolSchemas.add_scene_instance.shape,
   );
 }

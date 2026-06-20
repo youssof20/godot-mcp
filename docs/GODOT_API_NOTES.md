@@ -118,6 +118,10 @@ Official docs base: https://docs.godotengine.org/en/stable/
 | `AnimationTree` | [AnimationTree](https://docs.godotengine.org/en/stable/classes/class_animationtree.html) | State machine / blend tree |
 | `AnimationNodeStateMachine` | State machine node docs | Transitions |
 
+**Godot 4.7 notes:**
+- `AnimationNodeBlendTree.connect_node(input_node, input_index, output_node)` — 3 args only
+- Blend parameters: `animation_tree.set("parameters/node_name/param", value)` on the `AnimationTree` node
+
 **Version-sensitive:** AnimationTree API changed across 4.x; verify node path and parameter APIs for 4.4+.
 
 ---

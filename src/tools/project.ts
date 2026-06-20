@@ -24,6 +24,10 @@ export const projectToolSchemas = {
     keys: z.array(z.string()).optional(),
     prefix: z.string().optional(),
   }),
+  set_project_setting: z.object({
+    key: z.string().min(1),
+    value: z.unknown(),
+  }),
   uid_to_project_path: z.object({
     uid: z.string().min(1).describe("UID string, with or without uid:// prefix"),
   }),
@@ -71,6 +75,15 @@ export function registerProjectTools(
     "get_project_settings",
     "Read project settings by keys or prefix from project.godot.",
     projectToolSchemas.get_project_settings.shape,
+  );
+
+  registerGodotTool(
+    server,
+    client,
+    enabled,
+    "set_project_setting",
+    "Set a project.godot setting (undoable, saves project).",
+    projectToolSchemas.set_project_setting.shape,
   );
 
   registerGodotTool(

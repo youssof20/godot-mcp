@@ -13,6 +13,7 @@ const IMPLEMENTED_TOOLS: Array[String] = [
 	"get_filesystem_tree",
 	"search_files",
 	"get_project_settings",
+	"set_project_setting",
 	"uid_to_project_path",
 	"project_path_to_uid",
 	"get_scene_tree",
@@ -20,12 +21,14 @@ const IMPLEMENTED_TOOLS: Array[String] = [
 	"get_node_properties",
 	"list_scripts",
 	"read_script",
+	"get_open_scripts",
 	"get_editor_errors",
 	"get_output_log",
 	"create_scene",
 	"open_scene",
 	"save_scene",
 	"delete_scene",
+	"add_scene_instance",
 	"add_node",
 	"delete_node",
 	"duplicate_node",
@@ -39,6 +42,12 @@ const IMPLEMENTED_TOOLS: Array[String] = [
 	"attach_script",
 	"validate_script",
 	"search_in_files",
+	"execute_editor_script",
+	"clear_output",
+	"reload_plugin",
+	"get_editor_state",
+	"get_selected_nodes",
+	"list_node_types",
 	"reload_project",
 	"connect_signal",
 	"disconnect_signal",
@@ -57,6 +66,10 @@ const IMPLEMENTED_TOOLS: Array[String] = [
 	"find_resource_references",
 	"get_scene_dependencies",
 	"detect_circular_dependencies",
+	"find_nodes_by_type",
+	"find_signal_connections",
+	"batch_set_property",
+	"cross_scene_set_property",
 	"play_scene",
 	"stop_scene",
 	"get_runtime_status",
@@ -101,6 +114,12 @@ const IMPLEMENTED_TOOLS: Array[String] = [
 	"remove_animation",
 	"create_animation_tree",
 	"get_animation_tree_structure",
+	"set_tree_parameter",
+	"add_state_machine_state",
+	"remove_state_machine_state",
+	"add_state_machine_transition",
+	"remove_state_machine_transition",
+	"set_blend_tree_node",
 	"tilemap_set_cell",
 	"tilemap_fill_rect",
 	"tilemap_get_cell",
@@ -280,6 +299,8 @@ func route(method: String, params: Dictionary) -> Dictionary:
 			return _dispatch(_project_tools.search_files(params))
 		"get_project_settings":
 			return _dispatch(_project_tools.get_project_settings(params))
+		"set_project_setting":
+			return _dispatch(_project_tools.set_project_setting(params))
 		"uid_to_project_path":
 			return _dispatch(_project_tools.uid_to_project_path(params))
 		"project_path_to_uid":
@@ -294,10 +315,24 @@ func route(method: String, params: Dictionary) -> Dictionary:
 			return _dispatch(_script_tools.list_scripts(params))
 		"read_script":
 			return _dispatch(_script_tools.read_script(params))
+		"get_open_scripts":
+			return _dispatch(_script_tools.get_open_scripts(params))
 		"get_editor_errors":
 			return _dispatch(_editor_tools.get_editor_errors(params))
 		"get_output_log":
 			return _dispatch(_editor_tools.get_output_log(params))
+		"execute_editor_script":
+			return _dispatch(_editor_tools.execute_editor_script(params))
+		"clear_output":
+			return _dispatch(_editor_tools.clear_output(params))
+		"reload_plugin":
+			return _dispatch(_editor_tools.reload_plugin(params))
+		"get_editor_state":
+			return _dispatch(_editor_tools.get_editor_state(params))
+		"get_selected_nodes":
+			return _dispatch(_editor_tools.get_selected_nodes(params))
+		"list_node_types":
+			return _dispatch(_editor_tools.list_node_types(params))
 		"create_scene":
 			return _dispatch(_scene_tools.create_scene(params))
 		"open_scene":
@@ -306,6 +341,8 @@ func route(method: String, params: Dictionary) -> Dictionary:
 			return _dispatch(_scene_tools.save_scene(params))
 		"delete_scene":
 			return _dispatch(_scene_tools.delete_scene(params))
+		"add_scene_instance":
+			return _dispatch(_scene_tools.add_scene_instance(params))
 		"add_node":
 			return _dispatch(_node_tools.add_node(params))
 		"delete_node":
@@ -368,6 +405,14 @@ func route(method: String, params: Dictionary) -> Dictionary:
 			return _dispatch(_batch_tools.get_scene_dependencies(params))
 		"detect_circular_dependencies":
 			return _dispatch(_batch_tools.detect_circular_dependencies(params))
+		"find_nodes_by_type":
+			return _dispatch(_batch_tools.find_nodes_by_type(params))
+		"find_signal_connections":
+			return _dispatch(_batch_tools.find_signal_connections(params))
+		"batch_set_property":
+			return _dispatch(_batch_tools.batch_set_property(params))
+		"cross_scene_set_property":
+			return _dispatch(_batch_tools.cross_scene_set_property(params))
 		"play_scene":
 			return _dispatch(_runtime_tools.play_scene(params))
 		"stop_scene":
@@ -456,6 +501,18 @@ func route(method: String, params: Dictionary) -> Dictionary:
 			return _dispatch(_animation_tree_tools.create_animation_tree(params))
 		"get_animation_tree_structure":
 			return _dispatch(_animation_tree_tools.get_animation_tree_structure(params))
+		"set_tree_parameter":
+			return _dispatch(_animation_tree_tools.set_tree_parameter(params))
+		"add_state_machine_state":
+			return _dispatch(_animation_tree_tools.add_state_machine_state(params))
+		"remove_state_machine_state":
+			return _dispatch(_animation_tree_tools.remove_state_machine_state(params))
+		"add_state_machine_transition":
+			return _dispatch(_animation_tree_tools.add_state_machine_transition(params))
+		"remove_state_machine_transition":
+			return _dispatch(_animation_tree_tools.remove_state_machine_transition(params))
+		"set_blend_tree_node":
+			return _dispatch(_animation_tree_tools.set_blend_tree_node(params))
 		"tilemap_set_cell":
 			return _dispatch(_tilemap_tools.tilemap_set_cell(params))
 		"tilemap_fill_rect":

@@ -191,6 +191,53 @@ func save_scene(params: Dictionary) -> Dictionary:
 	return {"saved": true, "scene_path": scene_path}
 
 
+func add_scene_instance(params: Dictionary) -> Dictionary:
+	var root_check := _ctx.require_edited_root()
+	if root_check is Dictionary:
+		return root_check
+
+	var scene_path := MCPPathUtils.normalize_res_path(str(params.get("scene_path", "")).strip_edges())
+	var parent_path := str(params.get("parent_path", ".")).strip_edges()
+	if scene_path.is_empty():
+		return MCPErrorCodes.make_error(MCPErrorCodes.INVALID_PARAMS, "'scene_path' is required.")
+
+	if not MCPPathUtils.file_exists(scene_path):
+		return MCPErrorCodes.make_error(MCPErrorCodes.NOT_FOUND, "Scene not found: %s" % scene_path)
+
+	var packed: PackedScene = load(scene_path)
+	if packed == null:
+		return MCPErrorCodes.make_error(MCPErrorCodes.SCENE_ERROR, "Failed to load packed scene.")
+
+	var parent := _ctx.resolve_parent(parent_path)
+	if parent == null:
+		return MCPErrorCodes.make_error(MCPErrorCodes.NOT_FOUND, "Parent not found: %s" % parent_path)
+
+	var instance := packed.instantiate()
+	if instance == null:
+		return MCPErrorCodes.make_error(MCPErrorCodes.SCENE_ERROR, "Failed to instantiate scene.")
+
+	var instance_name := str(params.get("node_name", "")).strip_edges()
+	if not instance_name.is_empty():
+		instance.name = instance_name
+
+	var edited_root: Node = root_check
+	var ur := _ctx.undo_redo()
+	ur.create_action("MCP Instance Scene: %s" % scene_path.get_file())
+	ur.add_do_method(parent, "add_child", instance)
+	ur.add_do_method(instance, "set_owner", edited_root)
+	ur.add_undo_method(parent, "remove_child", instance)
+	ur.add_undo_method(instance, "queue_free")
+	ur.commit_action()
+
+	return {
+		"instance_path": _ctx.node_path_relative(instance),
+		"scene_path": scene_path,
+		"name": instance.name,
+		"type": instance.get_class(),
+		"parent_path": _ctx.node_path_relative(parent),
+	}
+
+
 func delete_scene(params: Dictionary) -> Dictionary:
 	var scene_path := MCPPathUtils.normalize_res_path(str(params.get("scene_path", "")))
 	if scene_path.is_empty():

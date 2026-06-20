@@ -288,11 +288,67 @@ func execute_game_script(params: Dictionary) -> Dictionary:
 	if not _runtime.is_playing():
 		return MCPErrorCodes.make_error(MCPErrorCodes.RUNTIME_NOT_RUNNING, "Game is not running.")
 
-	return MCPErrorCodes.make_error(
-		MCPErrorCodes.NOT_IMPLEMENTED,
-		"execute_game_script requires a debugger eval bridge (planned).",
-		"Use set_game_node_property or update_property for now.",
-	)
+	var source := str(params.get("source", "")).strip_edges()
+	if source.is_empty():
+		return MCPErrorCodes.make_error(MCPErrorCodes.INVALID_PARAMS, "'source' is required.")
+
+	var root := _runtime.find_runtime_root()
+	if root == null:
+		return MCPErrorCodes.make_error(MCPErrorCodes.RUNTIME_NOT_RUNNING, "Runtime root not found.")
+
+	var base_path := str(params.get("node_path", ".")).strip_edges()
+	var base_node := _runtime.resolve_runtime_node(base_path) if base_path != "." else root
+	if base_node == null:
+		base_node = root
+
+	var mode := str(params.get("mode", "expression")).strip_edges().to_lower()
+	if mode == "expression":
+		var expression := Expression.new()
+		var err := expression.parse(source)
+		if err != OK:
+			return MCPErrorCodes.make_error(
+				MCPErrorCodes.INVALID_PARAMS,
+				"Expression parse failed: %s" % expression.get_error_text(),
+			)
+		var result := expression.execute([], base_node)
+		if expression.has_execute_failed():
+			return MCPErrorCodes.make_error(MCPErrorCodes.GODOT_API_ERROR, "Expression execution failed.")
+		return {
+			"mode": "expression",
+			"node_path": _ctx.node_path_relative_to(base_node, root),
+			"result": str(result),
+			"result_type": typeof(result),
+		}
+
+	var script := GDScript.new()
+	script.source_code = "extends RefCounted\n\nvar target: Node\n\nfunc _init(node: Node) -> void:\n\ttarget = node\n\nfunc run() -> Variant:\n%s\n" % _indent_runtime_lines(source, 1)
+	var reload_err := script.reload()
+	if reload_err != OK:
+		return MCPErrorCodes.make_error(
+			MCPErrorCodes.INVALID_PARAMS,
+			"Script compile failed with error code %d." % reload_err,
+		)
+
+	var runner = script.new(base_node)
+	if runner == null or not runner.has_method("run"):
+		return MCPErrorCodes.make_error(MCPErrorCodes.GODOT_API_ERROR, "Failed to create script runner.")
+
+	var block_result = runner.run()
+	return {
+		"mode": "block",
+		"node_path": _ctx.node_path_relative_to(base_node, root),
+		"result": str(block_result),
+		"result_type": typeof(block_result),
+		"note": "Runtime changes are not undoable and reset when play stops.",
+	}
+
+
+func _indent_runtime_lines(text: String, tabs: int) -> String:
+	var prefix := "\t".repeat(tabs)
+	var lines: PackedStringArray = []
+	for line in text.split("\n"):
+		lines.append(prefix + line)
+	return "\n".join(lines)
 
 
 func _serialize_node_props(node: Node, params: Dictionary, scene_root: Node) -> Dictionary:

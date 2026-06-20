@@ -213,3 +213,230 @@ func _find_cycles(
 		if dep_path.begins_with("res://"):
 			_find_cycles(dep_path, graph, visited, stack, cycles)
 	stack.pop_back()
+
+
+func find_nodes_by_type(params: Dictionary) -> Dictionary:
+	var type_name := str(params.get("type", "")).strip_edges()
+	if type_name.is_empty():
+		return MCPErrorCodes.make_error(MCPErrorCodes.INVALID_PARAMS, "'type' is required.")
+
+	var scene_path := MCPPathUtils.normalize_res_path(str(params.get("scene_path", "")).strip_edges())
+	var max_results := clampi(int(params.get("max_results", 100)), 1, 1000)
+	var use_runtime := bool(params.get("runtime", false))
+
+	var root: Node = null
+	var cleanup := false
+	if use_runtime:
+		var runtime := MCPRuntimeHelper.new()
+		runtime.setup(_ctx)
+		root = runtime.find_runtime_root()
+		if root == null:
+			return MCPErrorCodes.make_error(MCPErrorCodes.RUNTIME_NOT_RUNNING, "Game is not running.")
+	elif scene_path.is_empty():
+		root = _ctx.edited_root()
+		if root == null:
+			return MCPErrorCodes.make_error(MCPErrorCodes.NOT_FOUND, "No edited scene; pass scene_path.")
+	else:
+		if not MCPPathUtils.file_exists(scene_path):
+			return MCPErrorCodes.make_error(MCPErrorCodes.NOT_FOUND, "Scene not found: %s" % scene_path)
+		var packed: PackedScene = load(scene_path)
+		if packed == null:
+			return MCPErrorCodes.make_error(MCPErrorCodes.SCENE_ERROR, "Failed to load scene.")
+		root = packed.instantiate()
+		cleanup = true
+
+	var matches: Array[Dictionary] = []
+	_find_type_recursive(root, type_name, root, matches, max_results)
+
+	if cleanup and root:
+		root.free()
+
+	return {"matches": matches, "count": matches.size(), "type": type_name}
+
+
+func find_signal_connections(params: Dictionary) -> Dictionary:
+	var scene_path := MCPPathUtils.normalize_res_path(str(params.get("scene_path", "")).strip_edges())
+	var node_filter := str(params.get("node_path", "")).strip_edges()
+	var signal_filter := str(params.get("signal", "")).strip_edges()
+	var max_results := clampi(int(params.get("max_results", 200)), 1, 2000)
+
+	var root: Node = null
+	var cleanup := false
+	if scene_path.is_empty():
+		root = _ctx.edited_root()
+		if root == null:
+			return MCPErrorCodes.make_error(MCPErrorCodes.NOT_FOUND, "No edited scene; pass scene_path.")
+	else:
+		if not MCPPathUtils.file_exists(scene_path):
+			return MCPErrorCodes.make_error(MCPErrorCodes.NOT_FOUND, "Scene not found.")
+		var packed: PackedScene = load(scene_path)
+		if packed == null:
+			return MCPErrorCodes.make_error(MCPErrorCodes.SCENE_ERROR, "Failed to load scene.")
+		root = packed.instantiate()
+		cleanup = true
+
+	var origin := root
+	if not node_filter.is_empty():
+		origin = root.get_node_or_null(NodePath(node_filter)) if not node_filter.begins_with("/") else root.get_node_or_null(node_filter)
+		if origin == null:
+			if cleanup:
+				root.free()
+			return MCPErrorCodes.make_error(MCPErrorCodes.NOT_FOUND, "Node not found: %s" % node_filter)
+
+	var connections: Array[Dictionary] = []
+	_collect_signal_connections(origin, root, signal_filter, connections, max_results)
+
+	if cleanup and root:
+		root.free()
+
+	return {"connections": connections, "count": connections.size()}
+
+
+func batch_set_property(params: Dictionary) -> Dictionary:
+	var changes: Array = params.get("changes", [])
+	if changes.is_empty():
+		return MCPErrorCodes.make_error(MCPErrorCodes.INVALID_PARAMS, "'changes' array required.")
+
+	var root_check := _ctx.require_edited_root()
+	if root_check is Dictionary:
+		return root_check
+
+	var ur := _ctx.undo_redo()
+	ur.create_action("MCP Batch Set Properties")
+	var applied: Array[Dictionary] = []
+
+	for change in changes:
+		if typeof(change) != TYPE_DICTIONARY:
+			continue
+		var d: Dictionary = change
+		var node_path := str(d.get("node_path", "")).strip_edges()
+		var property := str(d.get("property", "")).strip_edges()
+		if node_path.is_empty() or property.is_empty() or not d.has("value"):
+			continue
+
+		var node := _ctx.resolve_node(node_path)
+		if node == null:
+			applied.append({"node_path": node_path, "error": "not_found"})
+			continue
+
+		var new_value := MCPTypeParser.coerce_for_property(node, property, d["value"])
+		var old_value = node.get(property)
+		ur.add_do_method(node, "set", property, new_value)
+		ur.add_undo_method(node, "set", property, old_value)
+		applied.append({
+			"node_path": _ctx.node_path_relative(node),
+			"property": property,
+			"old_value": str(old_value),
+			"new_value": str(new_value),
+		})
+
+	if applied.is_empty():
+		return MCPErrorCodes.make_error(MCPErrorCodes.INVALID_PARAMS, "No valid changes in 'changes' array.")
+
+	ur.commit_action()
+	return {"applied": applied, "count": applied.size()}
+
+
+func cross_scene_set_property(params: Dictionary) -> Dictionary:
+	var scene_path := MCPPathUtils.normalize_res_path(str(params.get("scene_path", "")).strip_edges())
+	var node_path := str(params.get("node_path", "")).strip_edges()
+	var property := str(params.get("property", "")).strip_edges()
+	if scene_path.is_empty() or node_path.is_empty() or property.is_empty() or not params.has("value"):
+		return MCPErrorCodes.make_error(
+			MCPErrorCodes.INVALID_PARAMS,
+			"scene_path, node_path, property, and value are required.",
+		)
+
+	if not MCPPathUtils.file_exists(scene_path):
+		return MCPErrorCodes.make_error(MCPErrorCodes.NOT_FOUND, "Scene not found: %s" % scene_path)
+
+	var edited := _ctx.edited_root()
+	if edited and edited.scene_file_path == scene_path:
+		return MCPErrorCodes.make_error(
+			MCPErrorCodes.INVALID_PARAMS,
+			"Scene is currently open in the editor.",
+			"Use update_property on the edited scene or close it first.",
+		)
+
+	var packed: PackedScene = load(scene_path)
+	if packed == null:
+		return MCPErrorCodes.make_error(MCPErrorCodes.SCENE_ERROR, "Failed to load scene.")
+
+	var root := packed.instantiate()
+	var node := root.get_node_or_null(NodePath(node_path)) if not node_path.begins_with("/") else root.get_node_or_null(node_path)
+	if node == null:
+		root.free()
+		return MCPErrorCodes.make_error(MCPErrorCodes.NOT_FOUND, "Node not found in scene: %s" % node_path)
+
+	var new_value := MCPTypeParser.coerce_for_property(node, property, params["value"])
+	var old_value = node.get(property)
+	node.set(property, new_value)
+
+	var save := bool(params.get("save", true))
+	var saved := false
+	if save:
+		var out := PackedScene.new()
+		var pack_err := out.pack(root)
+		if pack_err != OK:
+			root.free()
+			return MCPErrorCodes.make_error(MCPErrorCodes.SCENE_ERROR, "Failed to pack scene (error %d)" % pack_err)
+		var save_err := ResourceSaver.save(out, scene_path)
+		if save_err != OK:
+			root.free()
+			return MCPErrorCodes.make_error(MCPErrorCodes.SCENE_ERROR, "Failed to save scene (error %d)" % save_err)
+		saved = true
+
+	root.free()
+	return {
+		"scene_path": scene_path,
+		"node_path": node_path,
+		"property": property,
+		"old_value": str(old_value),
+		"new_value": str(new_value),
+		"saved": saved,
+	}
+
+
+func _find_type_recursive(node: Node, type_name: String, root: Node, out: Array, max_count: int) -> void:
+	if out.size() >= max_count:
+		return
+	if node.is_class(type_name) or node.get_class() == type_name:
+		out.append({
+			"path": _ctx.node_path_relative_to(node, root),
+			"name": node.name,
+			"type": node.get_class(),
+		})
+	for child in node.get_children():
+		_find_type_recursive(child, type_name, root, out, max_count)
+
+
+func _collect_signal_connections(
+	node: Node,
+	scene_root: Node,
+	signal_filter: String,
+	out: Array,
+	max_count: int
+) -> void:
+	if out.size() >= max_count:
+		return
+
+	for sig in node.get_signal_list():
+		var sig_name := str(sig.get("name", ""))
+		if not signal_filter.is_empty() and sig_name != signal_filter:
+			continue
+		for conn in node.get_signal_connection_list(sig_name):
+			var callable_obj: Callable = conn.get("callable", Callable())
+			var target_obj: Object = callable_obj.get_object()
+			var target_path := ""
+			if target_obj is Node:
+				target_path = _ctx.node_path_relative_to(target_obj as Node, scene_root)
+			out.append({
+				"source_path": _ctx.node_path_relative_to(node, scene_root),
+				"signal": sig_name,
+				"target_path": target_path,
+				"method": str(callable_obj.get_method()),
+				"flags": conn.get("flags", 0),
+			})
+
+	for child in node.get_children():
+		_collect_signal_connections(child, scene_root, signal_filter, out, max_count)

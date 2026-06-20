@@ -38,6 +38,7 @@ export const scriptToolSchemas = {
     max_results: z.number().int().min(1).max(1000).optional().default(100),
     extensions: z.array(z.string()).optional(),
   }),
+  get_open_scripts: z.object({}).strict(),
 };
 
 export function registerScriptTools(
@@ -106,5 +107,14 @@ export function registerScriptTools(
     "search_in_files",
     "Search text content in project files.",
     scriptToolSchemas.search_in_files.shape,
+  );
+
+  registerGodotTool(
+    server,
+    client,
+    enabled,
+    "get_open_scripts",
+    "List scripts currently open in the Godot script editor.",
+    scriptToolSchemas.get_open_scripts.shape,
   );
 }

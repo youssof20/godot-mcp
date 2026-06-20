@@ -14,8 +14,8 @@ async function call(method, params = {}) {
 }
 
 const list = await call("list_available_tools");
-console.log("Tools:", list.result?.count, "(expected 153)");
-if (!list.ok || list.result?.count < 151) process.exit(1);
+console.log("Tools:", list.result?.count, "(expected 172)");
+if (!list.ok || list.result?.count < 170) process.exit(1);
 
 const help = await call("get_tool_help", { tool: "godot_ping" });
 console.log("Help category:", help.result?.category);

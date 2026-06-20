@@ -23,7 +23,8 @@ export const runtimeToolSchemas = {
   }),
   execute_game_script: z.object({
     source: z.string().min(1),
-    allowDangerous: z.boolean().optional(),
+    node_path: z.string().optional().default("."),
+    mode: z.enum(["expression", "block"]).optional().default("expression"),
   }),
   batch_get_properties: z.object({
     requests: z.array(

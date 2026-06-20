@@ -1,0 +1,38 @@
+---
+description: Godot MCP workflow hints for Cursor agents working on Godot 4 projects
+globs: "**/*.{gd,tscn,tres,gdshader,godot}"
+alwaysApply: false
+---
+
+# Godot MCP
+
+Godot must be **open** with the **Godot MCP** plugin enabled (`ws://127.0.0.1:6505`).
+
+## Start here
+
+1. `godot_ping` — confirm connection
+2. `get_editor_state` — open scene, selection, play mode, validation issues in one call
+3. `list_available_tools` / `get_tool_help` — authoritative tool list
+
+## Conventions
+
+- Paths: `res://` for project files; node paths are **scene-relative** (`Player/Sprite2D`)
+- Mutations use Godot undo where supported; call `save_scene` after edits
+- Read-only inspection of closed scenes: pass `scene_path` to `get_scene_tree` / `get_node_properties`
+- Dangerous tools (`execute_editor_script`, `execute_game_script`, `export_project`) need `ALLOW_GODOT_MCP_DANGEROUS=1`
+
+## Useful tools
+
+| Task | Tools |
+|------|-------|
+| Pick node type | `list_node_types` |
+| Find nodes | `find_nodes_by_type`, `find_nodes_in_group`, `find_nodes_by_script` |
+| Bulk edits | `batch_set_property` |
+| Signals | `get_signals`, `find_signal_connections`, `connect_signal` |
+| Scripts | `get_open_scripts`, `read_script`, `validate_script`, `get_editor_errors` |
+| Play test | `play_scene`, `get_runtime_status`, `get_game_scene_tree`, `stop_scene` |
+| AnimationTree | `get_animation_tree_structure`, `add_state_machine_state`, `set_tree_parameter` |
+
+## After plugin/code changes
+
+Reload Godot project → `npm run build` → restart MCP server (or `reload_plugin`).

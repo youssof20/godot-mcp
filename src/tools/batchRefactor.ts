@@ -24,6 +24,34 @@ export const batchRefactorToolSchemas = {
     path: z.string().optional().default("res://"),
     max_scenes: z.number().int().optional().default(200),
   }),
+  find_nodes_by_type: z.object({
+    type: z.string().min(1),
+    scene_path: z.string().optional(),
+    runtime: z.boolean().optional().default(false),
+    max_results: z.number().int().optional().default(100),
+  }),
+  find_signal_connections: z.object({
+    scene_path: z.string().optional(),
+    node_path: z.string().optional(),
+    signal: z.string().optional(),
+    max_results: z.number().int().optional().default(200),
+  }),
+  batch_set_property: z.object({
+    changes: z.array(
+      z.object({
+        node_path: z.string().min(1),
+        property: z.string().min(1),
+        value: z.unknown(),
+      }),
+    ),
+  }),
+  cross_scene_set_property: z.object({
+    scene_path: z.string().min(1),
+    node_path: z.string().min(1),
+    property: z.string().min(1),
+    value: z.unknown(),
+    save: z.boolean().optional().default(true),
+  }),
 };
 
 export function registerBatchRefactorTools(
@@ -37,7 +65,7 @@ export function registerBatchRefactorTools(
       client,
       enabled,
       name,
-      `Analysis tool: ${name}`,
+      `Analysis/refactor tool: ${name}`,
       schema.shape,
     );
   }
